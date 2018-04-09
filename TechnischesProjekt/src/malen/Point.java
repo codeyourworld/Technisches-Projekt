@@ -2,25 +2,29 @@ package malen;
 
 public class Point {
 
-	private int y;
-	private int x;
-	
+	private float y;
+	private float x;
 	
 	public Point() {
 		this(0, 0);
 	}
 	
-	public Point(int x, int y) {
+	public Point(float x, float y) {
 		this.x = x;
 		this.y = y;
 	}
 	
-	public int getX() {
+	public float getX() {
 		return x;
 	}
 	
-	public int getY() {
+	public float getY() {
 		return y;
+	}
+
+	public void norm(float xSize, float ySize) {
+		this.x /= xSize;
+		this.y /= ySize;
 	}
 	
 	@Override

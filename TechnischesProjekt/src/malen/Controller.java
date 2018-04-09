@@ -1,13 +1,16 @@
 package malen;
 
+import java.awt.Dimension;
+import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.io.File;
 import java.io.IOException;
+import java.util.Observable;
 
 import javax.swing.JFileChooser;
 
-public class Controller {
+public class Controller extends Observable{
 
 	private GUI gui;
 	private Koordinaten koordinaten;
@@ -28,6 +31,8 @@ public class Controller {
 					isDragged = !isDragged;
 					koordinaten.addPoint(-1, -1);							
 				}				
+				setChanged();
+				notifyObservers(new Point(e.getXOnScreen(), e.getYOnScreen()));
 			}
 			
 			@Override
@@ -87,11 +92,12 @@ public class Controller {
 				System.out.println(str);
 				System.out.println("\n\n\n -------ENDE LESE DATEI -----");
 				String [] points = str.split("\n");
+				Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
 				for (String p : points) {
 					String coordinates [] = p.split(",");
 					try {
-						int x = Integer.valueOf(coordinates[0]);
-						int y = Integer.valueOf(coordinates[1]);
+						float x = Float.valueOf(coordinates[0])* (float)screenSize.getWidth();
+						float y = Float.valueOf(coordinates[1])*(float)screenSize.getHeight();
 						this.koordinaten.addPoint(x, y);
 						
 					} catch (NumberFormatException e) {
@@ -114,12 +120,21 @@ public class Controller {
 			gui = new GUI(koordinaten);
 			reset();
 		});
+	
+		gui.getBackItem().addActionListener(l -> {
+			koordinaten.deleteLastLine();
+		});
 		
 		koordinaten.addObserver(gui.getPaintPanel());		
+		addObserver(gui.getPaintPanel());
 	}
 	
 	private void saveData (String filename) {
-		for (Point p : koordinaten.getPoints())
+		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+
+		for (Point p : koordinaten.getPoints()) {
+			p.norm((float)screenSize.getWidth(), (float)screenSize.getHeight());
 			IOService.writeLine(p.toString(), filename);
+		}
 	}
 }

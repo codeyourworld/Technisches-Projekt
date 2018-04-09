@@ -10,3 +10,7 @@ public class PaintMain {
 	}
 
 }
+
+//TODO: bei 0/0 anfangen
+//TODO: normieren auf 1
+//TODO: absetzen , rückgängig

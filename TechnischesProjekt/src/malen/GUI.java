@@ -19,6 +19,8 @@ public class GUI extends JFrame {
 	private JMenuItem finishItem = new JMenuItem("Finish");
 	private JMenuItem newItem = new JMenuItem("new File");
 	private JMenuItem openItem = new JMenuItem("open");
+	private JMenuItem backItem = new JMenuItem("back");
+
 	public GUI(Koordinaten koordinaten) {
 		panel = new PaintPanel(koordinaten.getPoints());	
 		add(panel, BorderLayout.CENTER);
@@ -33,6 +35,7 @@ public class GUI extends JFrame {
 		fileMenu.add(saveItem);
 		fileMenu.add(saveAsItem);
 		fileMenu.add(finishItem);
+		fileMenu.add(backItem);
 		setTitle("Paint a picture");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
@@ -67,5 +70,9 @@ public class GUI extends JFrame {
 	
 	public JMenuItem getOpenItem() {
 		return openItem;
+	}
+	
+	public JMenuItem getBackItem() {
+		return backItem;
 	}
 }
