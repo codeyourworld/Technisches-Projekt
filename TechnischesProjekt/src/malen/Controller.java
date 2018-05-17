@@ -164,11 +164,18 @@ public class Controller extends Observable{
 				int minY = Integer.valueOf(dialog.getMinValY().getText());
 				int maxY = Integer.valueOf(dialog.getMaxValY().getText());
 				boolean lines = dialog.getCoorsLines().isSelected();
-				int anzahlXVal = Integer.valueOf(dialog.getDistLineX().getText());
-				int anzahlYVal = Integer.valueOf(dialog.getDistLineY().getText());
-
-				CoordinateSystemCreater csc = new CoordinateSystemCreater(minX, maxX, minY, maxY, lines,
-					anzahlXVal, anzahlYVal, (int)gui.getSize().getWidth(), (int)gui.getSize().getHeight());
+				CoordinateSystemCreater csc;
+				if (lines) {
+					int anzahlXVal = Integer.valueOf(dialog.getDistLineX().getText());
+					int anzahlYVal = Integer.valueOf(dialog.getDistLineY().getText());
+					csc = new CoordinateSystemCreater(minX, maxX, minY, maxY, lines,
+							anzahlXVal, anzahlYVal, (int)gui.getSize().getWidth(), (int)gui.getSize().getHeight());
+					
+				} else {
+					csc = new CoordinateSystemCreater(minX, maxX, minY, maxY, lines,
+							0, 0, (int)gui.getSize().getWidth(), (int)gui.getSize().getHeight());
+					
+				}
 				csc.calcPoint();
 				koordinaten.addList(csc.getCoorsList());
 			} catch (NumberFormatException e) {

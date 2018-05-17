@@ -29,8 +29,14 @@ public class CoordinateSystemCreater {
 		this.distY = distY;
 		this.width = width;
 		this.height = height;
-		anzahlXVal = (maxX - minX)/distX;
-		anzahlYVal = (maxY - minY)/distY;
+		if (lines) {
+			anzahlXVal = (maxX - minX)/distX;
+			anzahlYVal = (maxY - minY)/distY;
+		}
+		else {
+			anzahlXVal = 10;
+			anzahlYVal = width / (height / anzahlXVal);
+		}
 		System.out.println("height: " + height + ", width: " + width + ", anzahlYVal: " + anzahlYVal);
 	}
 	
