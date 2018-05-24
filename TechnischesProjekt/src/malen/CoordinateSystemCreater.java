@@ -71,16 +71,15 @@ public class CoordinateSystemCreater {
 			coorsList.add(new Point(DIST_0_Y_LINE, abstand*i + offset));
 			if (lines && anzahlXVal % 2 == 0 && i % 2 != 0) {
 				coorsList.add(new Point(0, abstand*i + offset));	
-				paintNumber(maxX - (i-1)*distX, 0, abstand*i + offset);
-//				coorsList.add(new Point(smallLines, abstand*i + offset));
+				paintNumber(minX + (anzahlXVal - (i-1))*distX, 0, abstand*i + offset);
 				coorsList.add(new Point(width - DIST_0_X_LINE, abstand*i + offset));				
 
 			}
 			if (lines && anzahlXVal % 2 != 0 && i % 2 == 0) {
-//				coorsList.add(new Point(0, abstand*i + offset));	
-//				paintNumber(maxY - (i-1)*distY, 0, abstand*i + offset);
-					coorsList.add(new Point(DIST_0_Y_LINE-smallLines, abstand*i + offset));
-					coorsList.add(new Point(width - DIST_0_X_LINE, abstand*i + offset));				
+				coorsList.add(new Point(0, abstand*i + offset));
+				paintNumber(minX + (anzahlXVal - (i-1))*distX, 0, abstand*i + offset);
+				coorsList.add(new Point(0, abstand*i + offset));
+				coorsList.add(new Point(width - DIST_0_X_LINE, abstand*i + offset));				
 					
 			} else {
 				coorsList.add(new Point(DIST_0_Y_LINE-smallLines, abstand*i + offset));
@@ -105,24 +104,19 @@ public class CoordinateSystemCreater {
 		int end = height - (DIST_0_Y_LINE + anzahlXVal*abstand);
 		//Siehe Erklärung (2)		
 		abstand = (width-DIST_0_Y_LINE)/(anzahlYVal + 1);
-//		offset = width - (DIST_0_Y_LINE + abstand * (anzahlYVal + 1));
 		offset = DIST_0_Y_LINE;
 		for (int i = 0; i <= anzahlYVal; i++) {
 			coorsList.add(new Point(abstand*i + offset, height - DIST_0_X_LINE));
 			if (lines && i % 2 == 0) {
-//				coorsList.add(new Point(abstand*i + offset, height - (DIST_0_X_LINE + smallLines)));
 				coorsList.add(new Point(abstand*i + offset, height - (DIST_0_X_LINE - smallLines)));
 				paintNumber(minY + i*distY, abstand*i + offset, height - (DIST_0_X_LINE - smallLines));
 				coorsList.add(new Point(abstand*i + offset, height - (DIST_0_X_LINE - smallLines)));
-//				coorsList.add(new Point(0, abstand*i + offset));	
 				coorsList.add(new Point(abstand*i + offset, height - (DIST_0_X_LINE + smallLines)));
 				coorsList.add(new Point(abstand*i + offset, end));
-//				coorsList.add(new Point(abstand*i + offset, DIST_0_Y_LINE));
 					
 			} else {
 				coorsList.add(new Point(abstand*i + offset, height - (DIST_0_X_LINE + smallLines)));
 				coorsList.add(new Point(abstand*i + offset, height - (DIST_0_X_LINE - smallLines)));
-//				paintNumber(minY + i*distY, abstand*i + offset, height - (DIST_0_X_LINE - smallLines));
 				coorsList.add(new Point(abstand*i + offset, height - (DIST_0_X_LINE - smallLines)));
 			}
 			coorsList.add(new Point(abstand*i + offset, height - DIST_0_X_LINE));
