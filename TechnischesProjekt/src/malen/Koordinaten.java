@@ -6,6 +6,8 @@ import java.util.Observable;
 
 public class Koordinaten extends Observable{
 
+	public static final int BREAK = -1;
+	public static final int PICTURE = -4;
 	private ArrayList<Point> points = new ArrayList<>();
 	private Point startPoint;
 	
@@ -19,7 +21,7 @@ public class Koordinaten extends Observable{
 	public void setStartPoints(int x, int y) {
 		startPoint = new Point(x, y);
 		points.add(startPoint);
-		points.add(new Point(-1, -1));		
+		points.add(new Point(BREAK, BREAK));		
 	}
 
 	/**
@@ -60,7 +62,7 @@ public class Koordinaten extends Observable{
 
 		//finde den (-1, -1) Punkt
 		for(int i = points.size() - 2; i >= 0; i--) {
-			if (points.get(i).getX() == -1) {
+			if (points.get(i).getX() == BREAK) {
 				index = i;
 				break;
 			}
@@ -81,7 +83,7 @@ public class Koordinaten extends Observable{
 		if (points.size() < 2) {
 			points.clear();
 			points.add(startPoint);
-			points.add(new Point(-1, -1));		
+			points.add(new Point(BREAK, BREAK));		
 
 		}
 

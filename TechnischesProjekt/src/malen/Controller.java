@@ -9,12 +9,16 @@ import java.io.IOException;
 import java.util.Observable;
 
 import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+
+import bildverarbeitung.GreyToLines;
 
 public class Controller extends Observable{
 
 	private GUI gui;
 	private Koordinaten koordinaten;
 	private boolean isDragged = false;
+	private MouseMotionListener mListener;
 	
 	public Controller(GUI gui, Koordinaten koordinaten) {
 		this.gui = gui;
@@ -25,9 +29,8 @@ public class Controller extends Observable{
 
 	private void reset () {
 		//add painting points to picture
-		gui.addMouseMotionListener(new MouseMotionListener() {
+		mListener = new MouseMotionListener() {
 			
-			@Override
 			public void mouseMoved(MouseEvent e) {
 				if (isDragged) {
 					isDragged = !isDragged;
@@ -38,13 +41,14 @@ public class Controller extends Observable{
 				notifyObservers(new Point(e.getXOnScreen(), e.getYOnScreen()));
 			}
 			
-			@Override
 			public void mouseDragged(MouseEvent e) {
 				
 				koordinaten.addPoint(e.getXOnScreen(), e.getYOnScreen());							
 				isDragged = true;
 			}
-		});
+		};
+		
+		gui.addMouseMotionListener(mListener);
 
 		// ---------------- FILE MENU --------------------
 		gui.getSaveItem().addActionListener(l -> {
@@ -135,6 +139,20 @@ public class Controller extends Observable{
 			coordinates();
 		});
 		
+		gui.getPicItem().addActionListener(l -> {
+//			CoordinatesFromSobel coos = new CoordinatesFromSobel();
+//			System.out.println("berechne koordinaten aus Bild");
+//			coos.calcCoords();
+//			System.out.println("berechne koordinaten aus Bild ist fertig");			
+//			koordinaten.addList(coos.getPoints());
+			
+			GreyToLines lines = new GreyToLines("blur_Pic_SW_skal.JPG");
+			lines.createCoords();
+			koordinaten.addPoint(Koordinaten.PICTURE, Koordinaten.PICTURE);
+			koordinaten.addList(lines.getPoints());
+			gui.removeMouseMotionListener(mListener);
+		});
+		
 		// ---------------- ABOUT MENU --------------------
 		gui.getAboutItem().addActionListener(l -> {
 			new AboutDialog(gui, "About", true);
@@ -188,10 +206,19 @@ public class Controller extends Observable{
 	
 	private void saveData (String filename) {
 		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-
+		StringBuffer strBuf = new StringBuffer(koordinaten.getPoints().size());
+		float height = (float) screenSize.getHeight();
+		float width = (float) screenSize.getWidth();
+		System.out.println(koordinaten.getPoints().size());
 		for (Point p : koordinaten.getPoints()) {
-			p.norm((float)screenSize.getWidth(), (float)screenSize.getHeight());
-			IOService.writeLine(p.toString(), filename);
+			p.norm(width, height);
+			strBuf.append(p.toString() + "\r\n");
+			
 		}
+		System.out.println("Start writing data");
+		IOService.writeLine(strBuf.toString(), filename);
+		strBuf = null;
+		System.out.println("finish writing data");
+		JOptionPane.showMessageDialog(gui, "Finished saving data");
 	}
 }

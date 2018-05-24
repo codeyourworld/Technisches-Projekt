@@ -24,7 +24,8 @@ public class GUI extends JFrame {
 	private JMenuItem newItem = new JMenuItem("new File");
 	private JMenuItem openItem = new JMenuItem("open");
 	private JMenuItem backItem = new JMenuItem("back");
-
+	private JMenuItem picItem = new JMenuItem("Paint a picture");
+	
 	private JMenuItem addCoordItem = new JMenuItem("Add coordinates");
 	private JMenuItem aboutItem = new JMenuItem("About PaintCoos");
 
@@ -51,7 +52,8 @@ public class GUI extends JFrame {
 		saveAsItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_S, ActionEvent.CTRL_MASK + ActionEvent.ALT_MASK));
 		finishItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
 		backItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, ActionEvent.CTRL_MASK));
-
+		picItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
+		
 		//file menu
 		fileMenu.add(newItem);
 		fileMenu.add(openItem);		
@@ -62,7 +64,7 @@ public class GUI extends JFrame {
 		
 		//edit menu
 		editMenu.add(addCoordItem);
-		
+		editMenu.add(picItem);
 		//about menu
 		aboutMenu.add(aboutItem);
 		
@@ -114,5 +116,9 @@ public class GUI extends JFrame {
 	
 	public JMenuItem getAboutItem() {
 		return aboutItem;
+	}
+	
+	public JMenuItem getPicItem() {
+		return picItem;
 	}
 }
