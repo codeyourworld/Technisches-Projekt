@@ -1,4 +1,4 @@
-package malen;
+package malen.view;
 
 
 
@@ -31,9 +31,10 @@ public class AboutDialog extends JDialog{
 		boxPanel.setOpaque(true);
 		
 		JLabel gameName = new JLabel("PaintCoos");
-		JLabel versionName = new JLabel("Version: 1.1");
+		JLabel versionName = new JLabel("Version: 1.2");
 		JLabel authorName = new JLabel("Author: Stephanie Boehning");
 		JLabel uniName = new JLabel("Hochschule fuer Angewandte Wissenschaften Hamburg");
+		JLabel email = new JLabel("Email: stephanie.boehning@haw-hamburg.de");
 		JLabel javaVers = new JLabel("Java Version 8");
 
 		
@@ -42,6 +43,7 @@ public class AboutDialog extends JDialog{
 		versionName.setFont(font);
 		authorName.setFont(font);
 		uniName.setFont(font);
+		email.setFont(font);
 		javaVers.setFont(font);
 		
 		boxPanel.add(gameName);
@@ -49,6 +51,8 @@ public class AboutDialog extends JDialog{
 		boxPanel.add(versionName);
 		boxPanel.add(Box.createVerticalStrut(5));
 		boxPanel.add(authorName);
+		boxPanel.add(Box.createVerticalStrut(5));
+		boxPanel.add(email);
 		boxPanel.add(Box.createVerticalStrut(5));
 		boxPanel.add(uniName);
 		boxPanel.add(Box.createVerticalStrut(45));

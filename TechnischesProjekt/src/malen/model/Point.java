@@ -1,6 +1,8 @@
-package malen;
+package malen.model;
 
-public class Point {
+import java.io.Serializable;
+
+public class Point implements Serializable{
 
 	private float y;
 	private float x;

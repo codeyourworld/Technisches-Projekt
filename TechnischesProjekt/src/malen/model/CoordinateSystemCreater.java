@@ -1,9 +1,9 @@
-package malen;
+package malen.model;
 
 import java.util.ArrayList;
 import java.util.Collections;
 
-public class CoordinateSystemCreater {
+public class CoordinateSystemCreater implements IData{
 
 	private static final int DIST_0_Y_LINE = 150;
 	private static final int DIST_0_X_LINE = 100;
@@ -187,8 +187,15 @@ public class CoordinateSystemCreater {
 		
 	}
 	
-	public ArrayList<Point> getCoorsList() {
+	@Override
+	public ArrayList<Point> getCoordinates() {
 		return coorsList;
+	}
+	
+	@Override
+	public void start() {
+		calcPoint();
+		
 	}
 	
 	

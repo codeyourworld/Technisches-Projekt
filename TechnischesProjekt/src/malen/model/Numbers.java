@@ -1,4 +1,4 @@
-package malen;
+package malen.model;
 
 import java.util.ArrayList;
 

@@ -1,4 +1,4 @@
-package malen;
+package malen.view;
 
 
 
@@ -15,6 +15,8 @@ import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
+
+import malen.buisnesslogic.PaddingService;
 
 public class CoordinatesDialog extends JDialog {
 

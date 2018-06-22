@@ -1,4 +1,4 @@
-package malen;
+package malen.buisnesslogic;
 
 
 import java.awt.Color;

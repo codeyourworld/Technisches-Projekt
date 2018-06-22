@@ -1,6 +1,8 @@
-package malen;
+package malen.view;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Shape;
 import java.awt.RenderingHints.Key;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -11,39 +13,53 @@ import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
-public class GUI extends JFrame {
+import malen.buisnesslogic.PaddingService;
+import malen.model.Koordinaten;
 
+public class PaintFrame extends JFrame {
+
+	public static final int HEIGHT = 5*113;
+	public static final int WIDTH = 5*160;
+	private static final Color color = new Color(20, 200, 200);
+	
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
 	private PaintPanel panel;
+	
 	private JMenuItem saveItem = new JMenuItem("Save");
 	private JMenuItem saveAsItem = new JMenuItem("Save as");
 	private JMenuItem finishItem = new JMenuItem("Finish");
 	private JMenuItem newItem = new JMenuItem("new File");
 	private JMenuItem openItem = new JMenuItem("open");
 	private JMenuItem backItem = new JMenuItem("back");
-	private JMenuItem picItem = new JMenuItem("Paint a picture");
 	
 	private JMenuItem addCoordItem = new JMenuItem("Add coordinates");
+	private JMenuItem shapeItem = new JMenuItem("Add a Shape");
+	private JMenuItem picItem = new JMenuItem("Paint a picture");
+
+	private JMenuItem calibrateItem = new JMenuItem("Calibrate");
 	private JMenuItem aboutItem = new JMenuItem("About PaintCoos");
 
-	public GUI(Koordinaten koordinaten) {
+	public PaintFrame(Koordinaten koordinaten) {
+		add(PaddingService.createPaddings(10, true, color), BorderLayout.NORTH);
+		add(PaddingService.createPaddings(10, true, color), BorderLayout.SOUTH);
+		add(PaddingService.createPaddings(10, false, color), BorderLayout.WEST);
+		add(PaddingService.createPaddings(10, false, color), BorderLayout.EAST);
 		panel = new PaintPanel(koordinaten.getPoints());	
 		add(panel, BorderLayout.CENTER);
-
 		JMenuBar menuBar = new JMenuBar();
 		setJMenuBar(menuBar);
 		JMenu fileMenu = new JMenu("File");
 		menuBar.add(fileMenu);
 		JMenu editMenu = new JMenu("Edit");
 		menuBar.add(editMenu);
-		JMenu aboutMenu = new JMenu("About");
-		menuBar.add(aboutMenu);
+		JMenu helpMenu = new JMenu("Help");
+		menuBar.add(helpMenu);
 		
 
-		aboutMenu.setMnemonic('A');
+		helpMenu.setMnemonic('H');
 		editMenu.setMnemonic('E');
 		fileMenu.setMnemonic('F');
 		newItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_N, ActionEvent.CTRL_MASK));
@@ -53,6 +69,9 @@ public class GUI extends JFrame {
 		finishItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Q, ActionEvent.CTRL_MASK));
 		backItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_Z, ActionEvent.CTRL_MASK));
 		picItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_P, ActionEvent.CTRL_MASK));
+		addCoordItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, ActionEvent.CTRL_MASK));
+		calibrateItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, ActionEvent.CTRL_MASK));
+		shapeItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, ActionEvent.CTRL_MASK));
 		
 		//file menu
 		fileMenu.add(newItem);
@@ -64,22 +83,25 @@ public class GUI extends JFrame {
 		
 		//edit menu
 		editMenu.add(addCoordItem);
+		editMenu.add(shapeItem);
 		editMenu.add(picItem);
-		//about menu
-		aboutMenu.add(aboutItem);
+		
+		//help menu
+		helpMenu.add(calibrateItem);
+		helpMenu.add(aboutItem);
 		
 		
 		setTitle("PaintCoos");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-		setExtendedState(JFrame.MAXIMIZED_BOTH); 
+		//setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		setUndecorated(true);
+		setSize(WIDTH, HEIGHT);
 		setVisible(true);
-		
-//		Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-//		int width = (int) screenSize.getWidth();
-//		int height = (int) screenSize.getHeight();
-//		setSize(width, height);
+		setSize(WIDTH, 2*HEIGHT-getContentPane().getSize().height);
+		setVisible(true);
+		System.out.println("panel" + panel.getSize());
+
 	}
 	
 	public PaintPanel getPaintPanel() {
@@ -120,5 +142,13 @@ public class GUI extends JFrame {
 	
 	public JMenuItem getPicItem() {
 		return picItem;
+	}
+	
+	public JMenuItem getCalibrateItem() {
+		return calibrateItem;
+	}
+	
+	public JMenuItem getShapeItem() {
+		return shapeItem;
 	}
 }

@@ -1,4 +1,4 @@
-package malen;
+package malen.model;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -18,8 +18,7 @@ public class Koordinaten extends Observable{
 	 * @param x coordinate
 	 * @param y coordinate
 	 */
-	public void setStartPoints(int x, int y) {
-		startPoint = new Point(x, y);
+	private void setStartPoints() {
 		points.add(startPoint);
 		points.add(new Point(BREAK, BREAK));		
 	}
@@ -49,6 +48,7 @@ public class Koordinaten extends Observable{
 	 */
 	public void removeAllPoint () {
 		points.clear();
+		setStartPoints();
 		setChanged();
 		notifyObservers();		
 	}
@@ -82,9 +82,8 @@ public class Koordinaten extends Observable{
 		//wenn die Liste leer ist, sollen die Startkoordinaten wieder zur Liste hinzugefügt werden
 		if (points.size() < 2) {
 			points.clear();
-			points.add(startPoint);
-			points.add(new Point(BREAK, BREAK));		
 
+			setStartPoints();
 		}
 
 		//benachrichtige die View, dass sich die Modelwerte geändert haben
@@ -97,5 +96,17 @@ public class Koordinaten extends Observable{
 		points.addAll(list);
 		setChanged();
 		notifyObservers();
+	}
+
+	public void setMaxY(int height) {
+		startPoint = new Point(0, height);
+		if(points.isEmpty())
+		{
+			setStartPoints();
+		}
+	}
+	
+	public void setBreak() {
+		points.add(new Point(BREAK, BREAK));
 	}
 }
