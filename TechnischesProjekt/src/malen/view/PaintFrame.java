@@ -14,7 +14,7 @@ import javax.swing.JMenuItem;
 import javax.swing.KeyStroke;
 
 import malen.buisnesslogic.PaddingService;
-import malen.model.Koordinaten;
+import malen.model.Coordinates;
 
 public class PaintFrame extends JFrame {
 
@@ -42,7 +42,8 @@ public class PaintFrame extends JFrame {
 	private JMenuItem calibrateItem = new JMenuItem("Calibrate");
 	private JMenuItem aboutItem = new JMenuItem("About PaintCoos");
 
-	public PaintFrame(Koordinaten koordinaten) {
+	public PaintFrame(Coordinates koordinaten) {
+		super("TranslucentWindow");
 		add(PaddingService.createPaddings(10, true, color), BorderLayout.NORTH);
 		add(PaddingService.createPaddings(10, true, color), BorderLayout.SOUTH);
 		add(PaddingService.createPaddings(10, false, color), BorderLayout.WEST);
@@ -97,11 +98,10 @@ public class PaintFrame extends JFrame {
 		//setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		setUndecorated(true);
 		setSize(WIDTH, HEIGHT);
-		setVisible(true);
-		setSize(WIDTH, 2*HEIGHT-getContentPane().getSize().height);
+//		setSize(WIDTH, 2*HEIGHT-getContentPane().getSize().height);
 		setVisible(true);
 		System.out.println("panel" + panel.getSize());
-
+//		setLocation(100, 100);
 	}
 	
 	public PaintPanel getPaintPanel() {

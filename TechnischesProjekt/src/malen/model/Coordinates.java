@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Observable;
 
-public class Koordinaten extends Observable{
+public class Coordinates extends Observable{
 
 	public static final int BREAK = -1;
 	public static final int PICTURE = -4;
@@ -94,6 +94,7 @@ public class Koordinaten extends Observable{
 	
 	public void addList (ArrayList<Point> list) {
 		points.addAll(list);
+		setBreak();
 		setChanged();
 		notifyObservers();
 	}

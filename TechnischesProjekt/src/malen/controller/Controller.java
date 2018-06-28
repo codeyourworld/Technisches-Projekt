@@ -1,257 +1,197 @@
 package malen.controller;
 
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
-import java.io.File;
-import java.io.IOException;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
+import java.awt.event.WindowListener;
+import java.util.ArrayList;
 import java.util.Observable;
 
-import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
 
 import malen.buisnesslogic.IOService;
-import malen.buisnesslogic.Writer;
-import malen.model.CoordinateSystemCreater;
-import malen.model.GreyToLines;
-import malen.model.IData;
-import malen.model.Koordinaten;
+import malen.model.Coordinates;
 import malen.model.Point;
+import malen.model.Shapes;
 import malen.view.AboutDialog;
-import malen.view.CoordinatesDialog;
 import malen.view.PaintFrame;
 
 public class Controller extends Observable{
 
 	private static final String OFFSET_FILE_NAME = "offset.txt";
-	private PaintFrame gui;
-	private Koordinaten koordinaten;
+	private PaintFrame view;
+	private Coordinates coordinates;
 	private boolean isDragged = false;
-	private MouseMotionListener mListener;
+	private MouseMotionListener mmListener;
+	private MouseAdapter mouseAdapter;
 	private Point offset = new Point(0, 0);
+	private ShapeController shapeController = null;
 	
-	public Controller(PaintFrame gui, Koordinaten koordinaten) {
-		this.gui = gui;
-		this.koordinaten = koordinaten;
+	public Controller(PaintFrame view, Coordinates coordinates) {
+		this.view = view;
+		this.coordinates = coordinates;
 		reset();
 		
 	}
 
 	private void reset () {
-		koordinaten.setMaxY(gui.getPaintPanel().getSize().height);
+		coordinates.setMaxY(view.getPaintPanel().getSize().height);
 
-		Object object = IOService.readObject(OFFSET_FILE_NAME);
-		if(object instanceof Point) {
-			offset = (Point) object;
-		}
+		readOffset();
 		
 		//add painting points to picture
-		mListener = new MouseMotionListener() {
+		mmListener = new MouseMotionListener() {
 			
 			public void mouseMoved(MouseEvent e) {
 				if (isDragged) {
 					isDragged = !isDragged;
-					if (koordinaten.getPoints().get(koordinaten.getPoints().size()-1).getX() > 0)	
-						koordinaten.setBreak();							
+					if (coordinates.getPoints().get(coordinates.getPoints().size()-1).getX() > 0)	
+						coordinates.setBreak();							
 				}				
 				setChanged();
 				notifyObservers(new Point(e.getXOnScreen() + offset.getX(), e.getYOnScreen() + offset.getY()));
 			}
 			
 			public void mouseDragged(MouseEvent e) {
-				
-				koordinaten.addPoint(e.getXOnScreen() + offset.getX(), e.getYOnScreen() + offset.getY());							
-				isDragged = true;
+				if (shapeController == null) {
+					coordinates.addPoint(e.getXOnScreen() + offset.getX(), e.getYOnScreen() + offset.getY());							
+					isDragged = true;
+				}
 			}
 		};
 		
-		gui.addMouseMotionListener(mListener);
-
-		// ---------------- FILE MENU --------------------
-		gui.getSaveItem().addActionListener(l -> {
-			//TODO write into file
-			//Save as JPEG and Data
-			File file = new File(System.getProperty("user.home"), "//Desktop//daten");
-			File tmp = new File(file.getAbsolutePath() + ".txt");
-			int index = 1;
-			while (tmp.exists()) {
-				System.out.println(tmp.getAbsolutePath() + " existiert");
-				tmp = new File(file + String.valueOf(index) + ".txt");
-				index++;
-			}
-			System.out.println(tmp.getAbsolutePath() + " existiert nicht");
-			file = tmp;
-			try {
-				file.createNewFile();
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			System.out.println(file.getAbsolutePath());
-			Writer writer = new Writer();
-			writer.saveData(file.getAbsolutePath(), koordinaten.getPoints());
-			
-		});
-
-		gui.getSaveAsItem().addActionListener(l -> {
-			JFileChooser fileChooser = new JFileChooser();
-			int ret = fileChooser.showSaveDialog(gui);
-			if (ret == JFileChooser.APPROVE_OPTION) {
-				File file = fileChooser.getSelectedFile();
-				System.out.println(file.getAbsolutePath());
-				
-				Writer writer = new Writer();
-				writer.saveData(file.getAbsolutePath(), koordinaten.getPoints());
-				
-				//TODO Save as JPEG and Data
-			}
-		});
-		
-		gui.getOpenItem().addActionListener(l -> {
-			koordinaten.removeAllPoint();
-			File file = new File(System.getProperty("user.home"), "//Desktop");
-			JFileChooser fileChooser = new JFileChooser(file.getAbsolutePath());
-			int ret = fileChooser.showOpenDialog(gui);
-			if (ret == JFileChooser.APPROVE_OPTION) {
-				file = fileChooser.getSelectedFile();
-				String str = IOService.readFile(file.getAbsolutePath());
-				
-				System.out.println("\n\n\n -------LESE DATEI -----");
-				System.out.println(str);
-				System.out.println("\n\n\n -------ENDE LESE DATEI -----");
-				String [] points = str.split("\n");
-				//Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-				for (String p : points) {
-					String coordinates [] = p.split(",");
-					try {
-						float x = Float.valueOf(coordinates[0])* (float)PaintFrame.WIDTH;
-						float y = Float.valueOf(coordinates[1])*(float)PaintFrame.HEIGHT;
-						this.koordinaten.addPoint(x, y);
-						
-					} catch (NumberFormatException e) {
-						System.err.println("ERROR, Wrong number: " + p);
+		mouseAdapter = new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				super.mouseClicked(e);
+				System.out.println("Click");
+				if (shapeController == null) {
+					coordinates.addPoint(e.getXOnScreen() + offset.getX(), e.getYOnScreen() + offset.getY());							
+					isDragged = true;
+					System.err.println("shapeController = null");
+				}
+				else if (shapeController != null && shapeController.getModel().getShape() != Shapes.None){
+					if(shapeController.getModel().getStartPoint() != null) {
+						shapeController.getModel().setEndPoint(new Point(e.getXOnScreen() + offset.getX(), e.getYOnScreen() + offset.getY()));
+					} else {
+						shapeController.getModel().setStartPoint(new Point(e.getXOnScreen() + offset.getX(), e.getYOnScreen() + offset.getY()));						
 					}
 				}
 				
+				if(shapeController != null ){
+					System.out.println("shape : " + shapeController.getModel().getShape() + ", startpoint: " + shapeController.getModel().getStartPoint());
+				}
 			}
+		};
+		
+		view.addMouseMotionListener(mmListener);
+		view.addMouseListener(mouseAdapter);
 
+		// ---------------- FILE MENU --------------------
+		view.getSaveItem().addActionListener(l -> {
+			FileService.save(coordinates);
+			
+		});
+
+		view.getSaveAsItem().addActionListener(l -> {
+			FileService.saveAs(view, coordinates);
 		});
 		
-		gui.getFinishItem().addActionListener(l -> {
-			gui.setVisible(false);
-			gui.dispose();			
+		view.getOpenItem().addActionListener(l -> {
+			FileService.open(coordinates, view);
+		});
+		
+		view.getFinishItem().addActionListener(l -> {
+			view.setVisible(false);
+			view.dispose();			
 		});
 
-		gui.getNewItem().addActionListener(l -> {
-			gui.dispose();
-			koordinaten = new Koordinaten();
-			gui = new PaintFrame(koordinaten);
-			reset();
+		view.getNewItem().addActionListener(l -> {
+			newPaint();
 		});
 	
-		gui.getBackItem().addActionListener(l -> {
-			koordinaten.deleteLastLine();
+		view.getBackItem().addActionListener(l -> {
+			coordinates.deleteLastLine();
 			
 		});
 
 		// ---------------- EDIT MENU --------------------
-		gui.getAddCoordItem().addActionListener(l -> {
-			coordinates();
+		view.getAddCoordItem().addActionListener(l -> {
+			EditService.coordinates(view, coordinates);
 		});
 		
-		gui.getPicItem().addActionListener(l -> {
-
-			JFileChooser fileChooser = new JFileChooser();
-			if (fileChooser.showOpenDialog(gui) == JFileChooser.APPROVE_OPTION) {
-				File file = fileChooser.getSelectedFile();
-				GreyToLines lines = new GreyToLines(file.getAbsolutePath());
-				lines.createCoords();
-				koordinaten.addPoint(Koordinaten.PICTURE, Koordinaten.PICTURE);
-				koordinaten.addList(lines.getPoints());
-				gui.removeMouseMotionListener(mListener);
-			}
+		view.getPicItem().addActionListener(l -> {
+			EditService.addPicture(view, coordinates, mmListener);
+			
+		});
+		
+		view.getShapeItem().addActionListener(l -> {
+//			EditService.addShape(view, offset, this, coordinates.getPoints().get(coordinates.getPoints().size() - 1));
+			ShapeDialog shapeDialog = new ShapeDialog(view, "Add Shapes");
+			shapeDialog.addWindowListener(new WindowAdapter() {
+				
+				@Override
+				public void windowClosing(WindowEvent e) {
+					disableShapes();
+					
+				}
+			});
+			shapeController = new ShapeController(shapeDialog, offset, this, coordinates.getPoints().get(coordinates.getPoints().size() - 1));
+			shapeController.getModel().addObserver(view.getPaintPanel());
+			//view.setAlwaysOnTop(true);
+//			JOptionPane.showConfirmDialog(null, "Bitte wähl eine Form aus und klick in die graphische Oberfläche, um die Form zu zeichnen. "
+//					+ "In dem du ein zweites Mal klickst fixierst du die Form. Zum Bestätigen klick auf ok.");
 		});
 		
 		// ---------------- HELP MENU --------------------
-		gui.getAboutItem().addActionListener(l -> {
-			new AboutDialog(gui, "About", true);
+		view.getAboutItem().addActionListener(l -> {
+			new AboutDialog(view, "About", true);
 		});
-//		public static int showOptionDialog(Component parentComponent,
-//                Object message,
-//                String title,
-//                int optionType,
-//                int messageType,
-//                Icon icon,
-//                Object[] options,
-//                Object initialValue)
-//         throws HeadlessException
 
-		gui.getCalibrateItem().addActionListener(l -> {
-			int value = JOptionPane.showOptionDialog(null, 
-					"Die bisherige Arbeit wird beim Calibrieren gelöscht. OK?", 
-					"Achtung", 
-					JOptionPane.YES_NO_OPTION,
-					JOptionPane.WARNING_MESSAGE,
-					null, null, null);
+
+		view.getCalibrateItem().addActionListener(l -> {
+			int value = JOptionPane.showOptionDialog(null, "Die bisherige Arbeit wird beim Calibrieren gelöscht. OK?", 
+					"Achtung", JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE, null, null, null);
 			if(value == JOptionPane.YES_OPTION) {
-				new CalibrationController(this, gui);		
+				new CalibrationController(this, view);		
 			}
 			
 		});
 		
-		koordinaten.addObserver(gui.getPaintPanel());		
-		addObserver(gui.getPaintPanel());
+		coordinates.addObserver(view.getPaintPanel());		
+		addObserver(view.getPaintPanel());
 	}
 	
-	private void coordinates () {
-		CoordinatesDialog dialog = new CoordinatesDialog(gui, "Add Coordinates to Picture", false);
-		dialog.getCoorsLines().addActionListener(l -> {
-			if(dialog.getCoorsLines().isSelected()) {
-				dialog.getDistLineX().setEnabled(true);
-				dialog.getDistLineY().setEnabled(true);
-			} else {
-				dialog.getDistLineX().setEnabled(false);
-				dialog.getDistLineY().setEnabled(false);				
-			}
-		});
-		
-		dialog.getSaveBtn().addActionListener(l -> {
-			try {
-				int minX = Integer.valueOf(dialog.getMinValX().getText());
-				int maxX = Integer.valueOf(dialog.getMaxValX().getText());
-				int minY = Integer.valueOf(dialog.getMinValY().getText());
-				int maxY = Integer.valueOf(dialog.getMaxValY().getText());
-				boolean lines = dialog.getCoorsLines().isSelected();
-				IData data;  
-				if (lines) {
-					int anzahlXVal = Integer.valueOf(dialog.getDistLineX().getText());
-					int anzahlYVal = Integer.valueOf(dialog.getDistLineY().getText());
-					data = new CoordinateSystemCreater(minX, maxX, minY, maxY, lines,
-							anzahlXVal, anzahlYVal, (int)gui.getSize().getWidth(), (int)gui.getSize().getHeight());
-					
-				} else {
-					data = new CoordinateSystemCreater(minX, maxX, minY, maxY, lines,
-							0, 0, (int)gui.getSize().getWidth(), (int)gui.getSize().getHeight());
-					
-				}
-				data.start();
-				koordinaten.addList(data.getCoordinates());
-			} catch (NumberFormatException e) {
-				e.printStackTrace();
-			}
-			
-			dialog.dispose();
-		});
-	}
+	
 
 	public void setOffset(Point offset) {
 		this.offset = offset;
-		System.out.println("Offset = " + offset);
 		IOService.writeObject(offset, OFFSET_FILE_NAME);
-		gui.dispose();
-		koordinaten = new Koordinaten();
-		gui = new PaintFrame(koordinaten);
-		reset();
-		
-
+		newPaint();
 	}
 	
+	private void readOffset() {
+		Object object = IOService.readObject(OFFSET_FILE_NAME);
+		if(object instanceof Point) {
+			offset = (Point) object;
+		}
+	}
+	
+	private void newPaint(){
+		view.dispose();
+		coordinates = new Coordinates();
+		view = new PaintFrame(coordinates);
+		reset();
+	}
+	
+	public void addPoints(ArrayList<Point> points) {
+		coordinates.addList(points);
+	}
+
+	public void disableShapes() {
+		shapeController = null;
+		view.getPaintPanel().disableShapes();
+	}
 }

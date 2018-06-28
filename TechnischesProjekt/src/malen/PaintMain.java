@@ -1,15 +1,25 @@
 package malen;
 
+import static java.awt.GraphicsDevice.WindowTranslucency.TRANSLUCENT;
+
+import java.awt.GraphicsDevice;
+import java.awt.GraphicsEnvironment;
+
+import javax.swing.JFrame;
+import javax.swing.SwingUtilities;
+
 import malen.controller.Controller;
-import malen.model.Koordinaten;
+import malen.model.Coordinates;
+import malen.view.CalibrationDialog;
 import malen.view.PaintFrame;
+
 
 public class PaintMain {
 
 	public static void main(String[] args) {
-		Koordinaten koordinaten = new Koordinaten();
-		PaintFrame gui = new PaintFrame(koordinaten);
-		Controller controller = new Controller(gui, koordinaten);
+		Coordinates koordinaten = new Coordinates();
+    	PaintFrame frame = new PaintFrame(koordinaten);
+		Controller controller = new Controller(frame, koordinaten);
 
 	}
 

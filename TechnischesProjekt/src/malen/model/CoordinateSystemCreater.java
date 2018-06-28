@@ -5,8 +5,10 @@ import java.util.Collections;
 
 public class CoordinateSystemCreater implements IData{
 
+	private static final int DIST_Y_GRID = 50;
+	private static final int DIST_X_GRID = 50;
 	private static final int DIST_0_Y_LINE = 150;
-	private static final int DIST_0_X_LINE = 100;
+	private static final int DIST_0_X_LINE = 120;
 	private int minX;
 	private int maxX;
 	private int anzahlXVal;
@@ -72,14 +74,16 @@ public class CoordinateSystemCreater implements IData{
 			if (lines && anzahlXVal % 2 == 0 && i % 2 != 0) {
 				coorsList.add(new Point(0, abstand*i + offset));	
 				paintNumber(minX + (anzahlXVal - (i-1))*distX, 0, abstand*i + offset);
-				coorsList.add(new Point(width - DIST_0_X_LINE, abstand*i + offset));				
+				coorsList.add(new Point(width - DIST_X_GRID, abstand*i + offset));				
+//				coorsList.add(new Point(width - DIST_0_X_LINE, abstand*i + offset));				
 
 			}
 			if (lines && anzahlXVal % 2 != 0 && i % 2 == 0) {
 				coorsList.add(new Point(0, abstand*i + offset));
 				paintNumber(minX + (anzahlXVal - (i-1))*distX, 0, abstand*i + offset);
 				coorsList.add(new Point(0, abstand*i + offset));
-				coorsList.add(new Point(width - DIST_0_X_LINE, abstand*i + offset));				
+				coorsList.add(new Point(width - DIST_X_GRID, abstand*i + offset));				
+//				coorsList.add(new Point(width - DIST_0_X_LINE, abstand*i + offset));				
 					
 			} else {
 				coorsList.add(new Point(DIST_0_Y_LINE-smallLines, abstand*i + offset));
@@ -101,7 +105,7 @@ public class CoordinateSystemCreater implements IData{
 		coorsList.add(new Point(width, height - DIST_0_X_LINE));
 		
 		
-		int end = height - (DIST_0_Y_LINE + anzahlXVal*abstand);
+//		int end = height - (DIST_0_Y_LINE + anzahlXVal*abstand);
 		//Siehe Erklärung (2)		
 		abstand = (width-DIST_0_Y_LINE)/(anzahlYVal + 1);
 		offset = DIST_0_Y_LINE;
@@ -112,12 +116,12 @@ public class CoordinateSystemCreater implements IData{
 				paintNumber(minY + i*distY, abstand*i + offset, height - (DIST_0_X_LINE - smallLines));
 				coorsList.add(new Point(abstand*i + offset, height - (DIST_0_X_LINE - smallLines)));
 				coorsList.add(new Point(abstand*i + offset, height - (DIST_0_X_LINE + smallLines)));
-				coorsList.add(new Point(abstand*i + offset, end));
+				coorsList.add(new Point(abstand*i + offset, DIST_Y_GRID)); //end
 					
 			} else {
 				coorsList.add(new Point(abstand*i + offset, height - (DIST_0_X_LINE + smallLines)));
 				coorsList.add(new Point(abstand*i + offset, height - (DIST_0_X_LINE - smallLines)));
-				coorsList.add(new Point(abstand*i + offset, height - (DIST_0_X_LINE - smallLines)));
+				//coorsList.add(new Point(abstand*i + offset, height - (DIST_0_X_LINE - smallLines)));
 			}
 			coorsList.add(new Point(abstand*i + offset, height - DIST_0_X_LINE));
 		}
@@ -125,6 +129,7 @@ public class CoordinateSystemCreater implements IData{
 		//zum Koordinatenkreuz		
 		coorsList.add(new Point(DIST_0_Y_LINE, height - DIST_0_X_LINE));
 		coorsList.add(new Point(0, height - DIST_0_X_LINE));
+//		coorsList.add(new Point(DIST_0_Y_LINE, height - DIST_0_X_LINE));
 		coorsList.add(new Point(DIST_0_Y_LINE, height - DIST_0_X_LINE));
 
 		coorsList.add(new Point(-1, -1));
