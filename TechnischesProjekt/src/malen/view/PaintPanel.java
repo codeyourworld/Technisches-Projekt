@@ -89,9 +89,32 @@ public class PaintPanel extends JPanel implements Observer{
 				if (shape == Shapes.Rectangle)
 					g2.drawRect((int)startpoint.getX(), (int)startpoint.getY(), (int)(mousePoint.getX() - startpoint.getX()), (int)(mousePoint.getY() - startpoint.getY()));
 				if (shape == Shapes.Circle) {
-					int d = (int)(mousePoint.getX() - startpoint.getX()) + (int)(mousePoint.getY() - startpoint.getY()) / 2;
-					Point middle = new Point(mousePoint.getX() - startpoint.getX(), mousePoint.getY() - startpoint.getY());
-					g2.drawOval((int)middle.getX() + d/2, (int)middle.getY() + d/2, d, d);
+					double r = Math.sqrt(Math.pow(mousePoint.getX() - startpoint.getX(), 2.0) + Math.pow(mousePoint.getY() - startpoint.getY(), 2.0));	//pytagoras
+					//r = r / Math.sqrt(2.0);
+					Point mp = new Point((float)(mousePoint.getX() + startpoint.getX()) / 2.0f, (float)(mousePoint.getY() + startpoint.getY())/ 2.0f);
+					System.out.println(startpoint + "\n" + mousePoint + "\n" + mp + 
+							"\nmp.getX() - startpoint.getX(): " + (mp.getX() - startpoint.getX()) + 
+							"\nmp.getY() - startpoint.getY(): " + (mp.getY() - startpoint.getY()));
+					
+					Point start = new Point((float) (startpoint.getX() - ((mp.getX() - startpoint.getX()) / (Math.sqrt(2)*2))), 
+							(float) (startpoint.getY() - ((mp.getY() - startpoint.getY()) / (Math.sqrt(2)*2))));
+//					Point start = new Point((float) (startpoint.getX() - ((mp.getX() - startpoint.getX()) * ((Math.sqrt(2) - 1)/Math.sqrt(2)))), 
+//							(float) (startpoint.getY() - ((mp.getY() - startpoint.getY()) * ((Math.sqrt(2) - 1)/Math.sqrt(2)))));
+//					Point start = new Point((float) (startpoint.getX() - ((mp.getX() - startpoint.getX()) * ((Math.sqrt(2) - 1)/Math.sqrt(2)))), 
+//							(float) (startpoint.getY() - ((mp.getY() - startpoint.getY()) * ((Math.sqrt(2) - 1)/Math.sqrt(2)))));
+					//g2.drawOval((int)startpoint.getX(), (int)startpoint.getY(), (int)r, (int)r);
+					g2.drawOval((int)start.getX(), (int)start.getY(), (int)r, (int)r);
+//					g2.drawOval((int)start.getX(), (int)start.getY(), (int)(r + r*((Math.sqrt(2) - 1)/Math.sqrt(2))), (int)(r + r*((Math.sqrt(2) - 1)/Math.sqrt(2))));
+					g2.setColor(Color.ORANGE);
+					g2.drawOval((int)startpoint.getX(), (int)startpoint.getY(), 5, 5);
+					g2.drawOval((int)mousePoint.getX(), (int)mousePoint.getY(), 5, 5);
+					if(endpoint != null) {
+						g2.drawOval((int)endpoint.getX(), (int)endpoint.getY(), 5, 5);	
+						g2.drawLine((int)startpoint.getX(), (int)startpoint.getY(), (int)endpoint.getX(), (int)endpoint.getY());
+					}
+					g2.setColor(Color.PINK);
+					g2.drawRect((int)startpoint.getX(), (int)startpoint.getY(), (int)(mousePoint.getX() - startpoint.getX()), (int)(mousePoint.getY() - startpoint.getY()));
+
 				}					
 			}
 		} 
