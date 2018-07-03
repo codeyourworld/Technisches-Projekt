@@ -29,7 +29,7 @@ public class PaintPanel extends JPanel implements Observer{
 	private Shapes shape = Shapes.None;
 	private Point startpoint;
 	private Point endpoint;
-	
+	private ShapeModel shapeModel = null;
 	
 	public PaintPanel(ArrayList<Point> points) {
 		this.points = points;
@@ -89,21 +89,36 @@ public class PaintPanel extends JPanel implements Observer{
 				if (shape == Shapes.Rectangle)
 					g2.drawRect((int)startpoint.getX(), (int)startpoint.getY(), (int)(mousePoint.getX() - startpoint.getX()), (int)(mousePoint.getY() - startpoint.getY()));
 				if (shape == Shapes.Circle) {
+//					Double r = new Double(0.0);
+//					Point p = new Point();
+//					Point mp = new Point();
+//					Point mp = new Point((float)(mousePoint.getX() + startpoint.getX()) / 2.0f, (float)(mousePoint.getY() + startpoint.getY())/ 2.0f);
+//					ShapeModel.paintCircle(mousePoint, startpoint, r, mp);
+//					int distance = 0;
+//					if (mousePoint.getX() - startpoint.getX() > mousePoint.getY() - startpoint.getY())
+//						distance = (int)(mousePoint.getX() - startpoint.getX());
+//					else
+//						distance = (int)(mousePoint.getY() - startpoint.getY());
+
 					double r = Math.sqrt(Math.pow(mousePoint.getX() - startpoint.getX(), 2.0) + Math.pow(mousePoint.getY() - startpoint.getY(), 2.0));	//pytagoras
-					//r = r / Math.sqrt(2.0);
+					r = r / Math.sqrt(2.0);
 					Point mp = new Point((float)(mousePoint.getX() + startpoint.getX()) / 2.0f, (float)(mousePoint.getY() + startpoint.getY())/ 2.0f);
-					System.out.println(startpoint + "\n" + mousePoint + "\n" + mp + 
-							"\nmp.getX() - startpoint.getX(): " + (mp.getX() - startpoint.getX()) + 
-							"\nmp.getY() - startpoint.getY(): " + (mp.getY() - startpoint.getY()));
+//					System.out.println(startpoint + "\n" + mousePoint + "\n" + mp + 
+//							"\nmp.getX() - startpoint.getX(): " + (mp.getX() - startpoint.getX()) + 
+//							"\nmp.getY() - startpoint.getY(): " + (mp.getY() - startpoint.getY()));
 					
-					Point start = new Point((float) (startpoint.getX() - ((mp.getX() - startpoint.getX()) / (Math.sqrt(2)*2))), 
-							(float) (startpoint.getY() - ((mp.getY() - startpoint.getY()) / (Math.sqrt(2)*2))));
+//					Point start = new Point((float) (startpoint.getX() - 
+////							((mp.getX() - startpoint.getX()) / (Math.sqrt(2)))), 
+//							((mp.getX() - startpoint.getX())*(Math.sqrt(2) - 1) / (Math.sqrt(2)*2))), 
+//							(float) (startpoint.getY() - 
+////							((mp.getY() - startpoint.getY()) / (Math.sqrt(2)))));
+//							((mp.getY() - startpoint.getY())*(Math.sqrt(2) - 1) / (Math.sqrt(2)*2))));
 //					Point start = new Point((float) (startpoint.getX() - ((mp.getX() - startpoint.getX()) * ((Math.sqrt(2) - 1)/Math.sqrt(2)))), 
 //							(float) (startpoint.getY() - ((mp.getY() - startpoint.getY()) * ((Math.sqrt(2) - 1)/Math.sqrt(2)))));
 //					Point start = new Point((float) (startpoint.getX() - ((mp.getX() - startpoint.getX()) * ((Math.sqrt(2) - 1)/Math.sqrt(2)))), 
 //							(float) (startpoint.getY() - ((mp.getY() - startpoint.getY()) * ((Math.sqrt(2) - 1)/Math.sqrt(2)))));
-					//g2.drawOval((int)startpoint.getX(), (int)startpoint.getY(), (int)r, (int)r);
-					g2.drawOval((int)start.getX(), (int)start.getY(), (int)r, (int)r);
+					g2.drawOval((int)startpoint.getX(), (int)startpoint.getY(), (int)r, (int)r);
+//					g2.drawOval((int)start.getX(), (int)start.getY(), (int)r, (int)r);
 //					g2.drawOval((int)start.getX(), (int)start.getY(), (int)(r + r*((Math.sqrt(2) - 1)/Math.sqrt(2))), (int)(r + r*((Math.sqrt(2) - 1)/Math.sqrt(2))));
 					g2.setColor(Color.ORANGE);
 					g2.drawOval((int)startpoint.getX(), (int)startpoint.getY(), 5, 5);
@@ -113,7 +128,8 @@ public class PaintPanel extends JPanel implements Observer{
 						g2.drawLine((int)startpoint.getX(), (int)startpoint.getY(), (int)endpoint.getX(), (int)endpoint.getY());
 					}
 					g2.setColor(Color.PINK);
-					g2.drawRect((int)startpoint.getX(), (int)startpoint.getY(), (int)(mousePoint.getX() - startpoint.getX()), (int)(mousePoint.getY() - startpoint.getY()));
+//					g2.drawRect((int)startpoint.getX(), (int)startpoint.getY(), (int)(mousePoint.getX() - startpoint.getX()), (int)(mousePoint.getY() - startpoint.getY()));
+					g2.drawRect((int)startpoint.getX(), (int)startpoint.getY(), (int)(r), (int)(r));
 
 				}					
 			}
@@ -130,15 +146,22 @@ public class PaintPanel extends JPanel implements Observer{
 			}
 		}
 		if (arg instanceof ShapeModel) {
-			ShapeModel model = (ShapeModel) arg;
-			if (model.getStartPoint() == null) {
+			shapeModel = (ShapeModel) arg;
+			if (shapeModel.getStartPoint() == null) {
 				disableShapes();
 			} else {
-				shape = model.getShape();
-				startpoint = model.getStartPoint();				
+				if(shapeModel.isMoveShape()) {
+					mousePoint = shapeModel.getEndPoint();
+				}
+				shape = shapeModel.getShape();
+				startpoint = shapeModel.getStartPoint();				
 			}
 		} 
 		if (arg instanceof Point && o instanceof ShapeModel) {
+			if(shapeModel != null && shapeModel.isMoveShape()) {
+				mousePoint = shapeModel.getEndPoint();
+			}
+
 			endpoint = (Point) arg;
 		}
 

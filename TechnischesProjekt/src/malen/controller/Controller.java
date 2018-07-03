@@ -47,15 +47,42 @@ public class Controller extends Observable{
 			public void mouseMoved(MouseEvent e) {
 				if (isDragged) {
 					isDragged = !isDragged;
+							
+							
 					if (coordinates.getPoints().get(coordinates.getPoints().size()-1).getX() > 0)	
 						coordinates.setBreak();							
-				}				
+				}
+				else {
+//					if(shapeController!=null)
+//						System.err.println("isMoveShape: " + shapeController.getModel().isMoveShape() + ", getMRP: " + shapeController.getModel().getMoveResizePoint());
+					
+					//wenn sich der punkt verschieben soll und der Referenzpunkt schon gesetzt ist
+					if (shapeController != null && 
+						shapeController.getModel().isMoveShape() && 
+						shapeController.getModel().getMoveResizePoint() != null) {
+							shapeController.getModel().setMousePoint(
+									new Point(e.getXOnScreen() + offset.getX(), e.getYOnScreen() + offset.getY()));
+							System.out.println("setMousePoint for moving rect ");
+							return;
+					}
+
+				}
 				setChanged();
 				notifyObservers(new Point(e.getXOnScreen() + offset.getX(), e.getYOnScreen() + offset.getY()));
 			}
 			
 			public void mouseDragged(MouseEvent e) {
-				if (shapeController == null) {
+				if (shapeController != null && shapeController.getModel().getShape() != Shapes.None){
+//					if(shapeController.getModel().isMoveShape() && shapeController.getModel().getMoveResizePoint() != null) {
+//						shapeController.getModel().setMousePoint(new Point(e.getXOnScreen() + offset.getX(), e.getYOnScreen() + offset.getY()));
+//					}
+//					if(shapeController.getModel().isMoveShape() && shapeController.getModel().getMoveResizePoint() == null) {
+//						shapeController.getModel().setMoveResizePoint(new Point(e.getXOnScreen() + offset.getX(), e.getYOnScreen() + offset.getY()));
+//					}
+//					return;
+				}
+
+				else if (shapeController == null) {
 					coordinates.addPoint(e.getXOnScreen() + offset.getX(), e.getYOnScreen() + offset.getY());							
 					isDragged = true;
 				}
@@ -73,10 +100,23 @@ public class Controller extends Observable{
 					System.err.println("shapeController = null");
 				}
 				else if (shapeController != null && shapeController.getModel().getShape() != Shapes.None){
-					if(shapeController.getModel().getStartPoint() != null) {
+					if(shapeController.getModel().isMoveShape() && shapeController.getModel().getMoveResizePoint() == null) {
+						shapeController.getModel().setMoveResizePoint(new Point(e.getXOnScreen() + offset.getX(), e.getYOnScreen() + offset.getY()));
+						System.out.println("Setze MoveResizePoint");
+						System.out.println(shapeController.getModel().isMoveShape());
+					}
+					else if(shapeController.getModel().isMoveShape() && shapeController.getModel().getMoveResizePoint() != null) {
 						shapeController.getModel().setEndPoint(new Point(e.getXOnScreen() + offset.getX(), e.getYOnScreen() + offset.getY()));
-					} else {
-						shapeController.getModel().setStartPoint(new Point(e.getXOnScreen() + offset.getX(), e.getYOnScreen() + offset.getY()));						
+						System.out.println("Setze endpukt");
+					}
+					else if(!shapeController.getModel().isMoveShape()) {
+						if(shapeController.getModel().getStartPoint() != null && shapeController.getModel().getEndPoint() == null) {
+							shapeController.getModel().setEndPoint(new Point(e.getXOnScreen() + offset.getX(), e.getYOnScreen() + offset.getY()));
+							System.out.println("setze endpunkt");
+						} else if (shapeController.getModel().getStartPoint() == null){
+							System.out.println("setze startpunkt");
+							shapeController.getModel().setStartPoint(new Point(e.getXOnScreen() + offset.getX(), e.getYOnScreen() + offset.getY()));						
+						}
 					}
 				}
 				
