@@ -132,6 +132,8 @@ public class CoordinatesDialog extends JDialog {
 		add(PaddingService.createPaddings(40, false), BorderLayout.WEST);
 		add(centerPanel, BorderLayout.CENTER);
 		
+		setResizable(false);
+
 		pack();
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setVisible(true);

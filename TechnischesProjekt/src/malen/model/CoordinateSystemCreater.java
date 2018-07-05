@@ -6,14 +6,12 @@ import java.util.Collections;
 public class CoordinateSystemCreater implements IData{
 
 	private static final int DIST_Y_GRID = 50;
-	private static final int DIST_X_GRID = 50;
-	private static final int DIST_0_Y_LINE = 150;
-	private static final int DIST_0_X_LINE = 120;
+	private static final int DIST_X_GRID = 100;
+	private static final int DIST_0_Y_LINE = 100;
+	private static final int DIST_0_X_LINE = 100;
 	private int minX;
-	private int maxX;
 	private int anzahlXVal;
 	private int minY;
-	private int maxY;
 	private int anzahlYVal;
 	private boolean lines;
 	private int distX;
@@ -21,12 +19,12 @@ public class CoordinateSystemCreater implements IData{
 	private int width;
 	private int height;
 	private ArrayList<Point> coorsList = new ArrayList<>();
+	private int factor = 20;
 	
 	public CoordinateSystemCreater(int minX, int maxX, int minY, int maxY, boolean lines, int distX, int distY, int width, int height) {
 		this.minX = minX;
-		this.maxX = maxX;
 		this.minY = minY;
-		this.maxY = maxY;
+
 		this.lines = lines;
 		this.distX = distX;
 		this.distY = distY;
@@ -64,10 +62,9 @@ public class CoordinateSystemCreater implements IData{
 		//Siehe Erklärung (1)		
 		coorsList.add(new Point(DIST_0_Y_LINE, 0));
 
-		int smallLines = DIST_0_Y_LINE/3;
-		
+		int smallLines = DIST_Y_GRID/2 >= factor * 2 + 5 ? DIST_Y_GRID/2 : factor * 2 + 5;
 		//Siehe Erklärung (2)		
-		int abstand = (height-DIST_0_X_LINE)/(anzahlXVal + 1);
+		int abstand = (height - DIST_0_X_LINE - DIST_Y_GRID)/(anzahlXVal + 1);
 		int offset = height - (DIST_0_X_LINE + abstand * (anzahlXVal + 1));
 		for (int i = 1; i <= anzahlXVal; i++) {
 			coorsList.add(new Point(DIST_0_Y_LINE, abstand*i + offset));
@@ -107,7 +104,7 @@ public class CoordinateSystemCreater implements IData{
 		
 //		int end = height - (DIST_0_Y_LINE + anzahlXVal*abstand);
 		//Siehe Erklärung (2)		
-		abstand = (width-DIST_0_Y_LINE)/(anzahlYVal + 1);
+		abstand = (width-DIST_0_Y_LINE-DIST_X_GRID)/(anzahlYVal + 1);
 		offset = DIST_0_Y_LINE;
 		for (int i = 0; i <= anzahlYVal; i++) {
 			coorsList.add(new Point(abstand*i + offset, height - DIST_0_X_LINE));
@@ -132,11 +129,11 @@ public class CoordinateSystemCreater implements IData{
 //		coorsList.add(new Point(DIST_0_Y_LINE, height - DIST_0_X_LINE));
 		coorsList.add(new Point(DIST_0_Y_LINE, height - DIST_0_X_LINE));
 
-		coorsList.add(new Point(-1, -1));
+//		coorsList.add(new Point(-1, -1));
 	}
 	
 	private void paintNumber(int num, int x, int y) {
-		int factor = 20;
+		
 		ArrayList<Integer> nums = new ArrayList<>();
 		if (num == 0)
 			nums.add(0);
@@ -184,6 +181,7 @@ public class CoordinateSystemCreater implements IData{
 			default:
 				break;
 			}
+			System.out.println("factor: " + factor);
 			for(int i = 0; i < points.size(); i++) {
 				coorsList.add(new Point(points.get(i).getX()*factor + x + cnt*factor + 15*cnt + 10, -points.get(i).getY()*factor + y));
 			}
@@ -203,6 +201,10 @@ public class CoordinateSystemCreater implements IData{
 		
 	}
 	
-	
+	public void setNumbersFactor(int factor){
+		this.factor  = factor;
+		coorsList.clear();
+		calcPoint();
+	}
 	
 }

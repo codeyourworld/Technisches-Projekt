@@ -2,8 +2,7 @@ package malen.view;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Shape;
-import java.awt.RenderingHints.Key;
+import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 
@@ -38,6 +37,7 @@ public class PaintFrame extends JFrame {
 	private JMenuItem addCoordItem = new JMenuItem("Add coordinates");
 	private JMenuItem shapeItem = new JMenuItem("Add a Shape");
 	private JMenuItem picItem = new JMenuItem("Paint a picture");
+	private JMenuItem lineWidthItem = new JMenuItem("Edit line width");
 
 	private JMenuItem calibrateItem = new JMenuItem("Calibrate");
 	private JMenuItem aboutItem = new JMenuItem("About PaintCoos");
@@ -73,6 +73,7 @@ public class PaintFrame extends JFrame {
 		addCoordItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_K, ActionEvent.CTRL_MASK));
 		calibrateItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_B, ActionEvent.CTRL_MASK));
 		shapeItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_H, ActionEvent.CTRL_MASK));
+		lineWidthItem.setAccelerator(KeyStroke.getKeyStroke(KeyEvent.VK_L, ActionEvent.CTRL_MASK));
 		
 		//file menu
 		fileMenu.add(newItem);
@@ -83,6 +84,7 @@ public class PaintFrame extends JFrame {
 		fileMenu.add(backItem);
 		
 		//edit menu
+		editMenu.add(lineWidthItem);
 		editMenu.add(addCoordItem);
 		editMenu.add(shapeItem);
 		editMenu.add(picItem);
@@ -90,18 +92,32 @@ public class PaintFrame extends JFrame {
 		//help menu
 		helpMenu.add(calibrateItem);
 		helpMenu.add(aboutItem);
-		
+
+		Font font = new Font(Font.SANS_SERIF, Font.PLAIN, 16);
+//		Font font = new Font(Font.SANS_SERIF, Font.PLAIN, 16);
+		fileMenu.setFont(font);
+		helpMenu.setFont(font);
+		editMenu.setFont(font);
+		aboutItem.setFont(font);
+		newItem.setFont(font);
+		openItem.setFont(font);
+		saveItem.setFont(font);
+		saveAsItem.setFont(font);
+		finishItem.setFont(font);
+		backItem.setFont(font);
+		lineWidthItem.setFont(font);
+		picItem.setFont(font);
+		addCoordItem.setFont(font);
+		calibrateItem.setFont(font);
+		shapeItem.setFont(font);
 		
 		setTitle("PaintCoos");
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 
-		//setExtendedState(JFrame.MAXIMIZED_BOTH); 
 		setUndecorated(true);
 		setSize(WIDTH, HEIGHT);
-//		setSize(WIDTH, 2*HEIGHT-getContentPane().getSize().height);
 		setVisible(true);
 		System.out.println("panel" + panel.getSize());
-//		setLocation(100, 100);
 	}
 	
 	public PaintPanel getPaintPanel() {
@@ -150,5 +166,9 @@ public class PaintFrame extends JFrame {
 	
 	public JMenuItem getShapeItem() {
 		return shapeItem;
+	}
+	
+	public JMenuItem getLineWidthItem() {
+		return lineWidthItem;
 	}
 }

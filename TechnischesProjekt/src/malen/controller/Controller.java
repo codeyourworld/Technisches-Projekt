@@ -1,11 +1,12 @@
 package malen.controller;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionListener;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.event.WindowListener;
 import java.util.ArrayList;
 import java.util.Observable;
 
@@ -16,6 +17,7 @@ import malen.model.Coordinates;
 import malen.model.Point;
 import malen.model.Shapes;
 import malen.view.AboutDialog;
+import malen.view.EditLineWidthDialog;
 import malen.view.PaintFrame;
 
 public class Controller extends Observable{
@@ -53,16 +55,13 @@ public class Controller extends Observable{
 						coordinates.setBreak();							
 				}
 				else {
-//					if(shapeController!=null)
-//						System.err.println("isMoveShape: " + shapeController.getModel().isMoveShape() + ", getMRP: " + shapeController.getModel().getMoveResizePoint());
-					
 					//wenn sich der punkt verschieben soll und der Referenzpunkt schon gesetzt ist
 					if (shapeController != null && 
 						shapeController.getModel().isMoveShape() && 
-						shapeController.getModel().getMoveResizePoint() != null) {
+						shapeController.getModel().isSetMoveResizePoint()) {
 							shapeController.getModel().setMousePoint(
 									new Point(e.getXOnScreen() + offset.getX(), e.getYOnScreen() + offset.getY()));
-							System.out.println("setMousePoint for moving rect ");
+							
 							return;
 					}
 
@@ -93,35 +92,39 @@ public class Controller extends Observable{
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				super.mouseClicked(e);
-				System.out.println("Click");
+				
+				//if the user starts to paint it starts with a click and then the mouse is dragged
 				if (shapeController == null) {
 					coordinates.addPoint(e.getXOnScreen() + offset.getX(), e.getYOnScreen() + offset.getY());							
 					isDragged = true;
-					System.err.println("shapeController = null");
+					
 				}
+
+				//if a shape should be painted
 				else if (shapeController != null && shapeController.getModel().getShape() != Shapes.None){
-					if(shapeController.getModel().isMoveShape() && shapeController.getModel().getMoveResizePoint() == null) {
+					
+					//if there is no reference point and a shape should be moved, a reference point is set now
+					if(shapeController.getModel().isMoveShape() && !shapeController.getModel().isSetMoveResizePoint()) {
 						shapeController.getModel().setMoveResizePoint(new Point(e.getXOnScreen() + offset.getX(), e.getYOnScreen() + offset.getY()));
-						System.out.println("Setze MoveResizePoint");
-						System.out.println(shapeController.getModel().isMoveShape());
+						
 					}
-					else if(shapeController.getModel().isMoveShape() && shapeController.getModel().getMoveResizePoint() != null) {
+					
+					//if there is a reference point and a shape should be moved, an end point is set now and the movement is finished for now
+					else if(shapeController.getModel().isMoveShape() && shapeController.getModel().isSetMoveResizePoint()) {
 						shapeController.getModel().setEndPoint(new Point(e.getXOnScreen() + offset.getX(), e.getYOnScreen() + offset.getY()));
-						System.out.println("Setze endpukt");
+						
 					}
+					
+					//if the user just wants to set a shape
 					else if(!shapeController.getModel().isMoveShape()) {
 						if(shapeController.getModel().getStartPoint() != null && shapeController.getModel().getEndPoint() == null) {
 							shapeController.getModel().setEndPoint(new Point(e.getXOnScreen() + offset.getX(), e.getYOnScreen() + offset.getY()));
-							System.out.println("setze endpunkt");
+							
 						} else if (shapeController.getModel().getStartPoint() == null){
-							System.out.println("setze startpunkt");
+							
 							shapeController.getModel().setStartPoint(new Point(e.getXOnScreen() + offset.getX(), e.getYOnScreen() + offset.getY()));						
 						}
 					}
-				}
-				
-				if(shapeController != null ){
-					System.out.println("shape : " + shapeController.getModel().getShape() + ", startpoint: " + shapeController.getModel().getStartPoint());
 				}
 			}
 		};
@@ -158,6 +161,24 @@ public class Controller extends Observable{
 		});
 
 		// ---------------- EDIT MENU --------------------
+		
+		view.getLineWidthItem().addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent actionEvent) {
+				EditLineWidthDialog lineWidthDialog = new EditLineWidthDialog(view, "Edit line width", false, EditLineWidthDialog.LINE_WIDTH_DIALOG);
+				lineWidthDialog.getSaveBtn().addActionListener(e -> {
+					view.getPaintPanel().setLineWidth(lineWidthDialog.getLineWidthSlider().getValue());
+					lineWidthDialog.dispose();
+				});
+				lineWidthDialog.getLineWidthSlider().addChangeListener(e -> {
+					lineWidthDialog.setWidth();
+				}); 
+				
+			}
+		});
+
+		
 		view.getAddCoordItem().addActionListener(l -> {
 			EditService.coordinates(view, coordinates);
 		});
@@ -168,7 +189,6 @@ public class Controller extends Observable{
 		});
 		
 		view.getShapeItem().addActionListener(l -> {
-//			EditService.addShape(view, offset, this, coordinates.getPoints().get(coordinates.getPoints().size() - 1));
 			ShapeDialog shapeDialog = new ShapeDialog(view, "Add Shapes");
 			shapeDialog.addWindowListener(new WindowAdapter() {
 				
@@ -178,11 +198,8 @@ public class Controller extends Observable{
 					
 				}
 			});
-			shapeController = new ShapeController(shapeDialog, offset, this, coordinates.getPoints().get(coordinates.getPoints().size() - 1));
+			shapeController = new ShapeController(shapeDialog, this);
 			shapeController.getModel().addObserver(view.getPaintPanel());
-			//view.setAlwaysOnTop(true);
-//			JOptionPane.showConfirmDialog(null, "Bitte wähl eine Form aus und klick in die graphische Oberfläche, um die Form zu zeichnen. "
-//					+ "In dem du ein zweites Mal klickst fixierst du die Form. Zum Bestätigen klick auf ok.");
 		});
 		
 		// ---------------- HELP MENU --------------------

@@ -12,6 +12,9 @@ import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JTextArea;
+
+import malen.buisnesslogic.PaddingService;
 
 public class AboutDialog extends JDialog{
 
@@ -29,25 +32,37 @@ public class AboutDialog extends JDialog{
 		boxPanel.setLayout(new BoxLayout(boxPanel,  BoxLayout.Y_AXIS));
 		boxPanel.setBackground(Color.WHITE);
 		boxPanel.setOpaque(true);
+		boxPanel.setAlignmentX(LEFT_ALIGNMENT);
+		
+		JTextArea info = new JTextArea(
+				"Mit PaintCoos kannst du zeichnen, ein Koordinatensystem, Formen oder Bilder einfügen. \n"
+				+ "PaintCoos berechnet die jeweiligen Koordinaten und speichert sie normiert auf 1 ab.\n"
+				+ "Die Breite und Höhe ist auf das \"Etch a sketch\"-Board angepasst.");
+		info.setAlignmentX(LEFT_ALIGNMENT);
+		info.setEditable(false);
 		
 		JLabel gameName = new JLabel("PaintCoos");
-		JLabel versionName = new JLabel("Version: 1.2");
+		JLabel versionName = new JLabel("Version: 1.3");
 		JLabel authorName = new JLabel("Author: Stephanie Boehning");
 		JLabel uniName = new JLabel("Hochschule fuer Angewandte Wissenschaften Hamburg");
 		JLabel email = new JLabel("Email: stephanie.boehning@haw-hamburg.de");
 		JLabel javaVers = new JLabel("Java Version 8");
 
-		
+//		Font font = new Font(Font.SANS_SERIF, Font.PLAIN, 20);
 		Font font = new Font(getFont().getFontName(), Font.PLAIN, 16);
+		boxPanel.setFont(font);
 		gameName.setFont(font.deriveFont(Font.BOLD));
 		versionName.setFont(font);
 		authorName.setFont(font);
 		uniName.setFont(font);
 		email.setFont(font);
 		javaVers.setFont(font);
+		info.setFont(font);
 		
 		boxPanel.add(gameName);
-		boxPanel.add(Box.createVerticalStrut(10));
+		boxPanel.add(Box.createVerticalStrut(30));
+		boxPanel.add(info);
+		boxPanel.add(Box.createVerticalStrut(30));
 		boxPanel.add(versionName);
 		boxPanel.add(Box.createVerticalStrut(5));
 		boxPanel.add(authorName);
@@ -58,33 +73,18 @@ public class AboutDialog extends JDialog{
 		boxPanel.add(Box.createVerticalStrut(45));
 		boxPanel.add(javaVers);
 
-		add(createPaddings(40,  true), BorderLayout.NORTH);
-		add(createPaddings(40,  true), BorderLayout.SOUTH);
-		add(createPaddings(40,  false), BorderLayout.WEST);
-		add(createPaddings(40,  false), BorderLayout.EAST);
+		add(PaddingService.createPaddings(40,  true), BorderLayout.NORTH);
+		add(PaddingService.createPaddings(40,  true), BorderLayout.SOUTH);
+		add(PaddingService.createPaddings(40,  false), BorderLayout.WEST);
+		add(PaddingService.createPaddings(40,  false), BorderLayout.EAST);
 		add(boxPanel, BorderLayout.CENTER);
 		
 		
+		setResizable(false);
 		pack();
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setVisible(true);
 	}
 
-	/**
-	 * A box for padding is created, so you can use the box for the WEST, EAST, SOUTH and NORTH of the 
-	 * BorderLayout. The Background color is set to white.
-	 * 
-	 * @param number for padding/distance
-	 * @param vertical if vertical is true a vertical strut is created else a horizonal strut
-	 * @return Box with a horizontal or a vertical strut
-	 */
-	private Box createPaddings (int number, boolean vertical) {
-		
-		Box box = new Box(vertical? BoxLayout.Y_AXIS : BoxLayout.X_AXIS);
-		box.setBackground(Color.WHITE);
-		box.setOpaque(true);
-		box.add(vertical? Box.createVerticalStrut(number) : Box.createHorizontalStrut(number));
 
-		return box;
-	}
 }
