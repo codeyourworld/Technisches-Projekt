@@ -2,6 +2,8 @@ package malen.model;
 
 import java.io.Serializable;
 
+import malen.view.PaintFrame;
+
 public class Point implements Serializable{
 
 	/**
@@ -13,6 +15,11 @@ public class Point implements Serializable{
 	
 	public Point() {
 		this(0, 0);
+	}
+	
+	public Point(Point p) {
+		this.x = p.x;
+		this.y = p.y;
 	}
 	
 	public Point(float x, float y) {
@@ -33,6 +40,19 @@ public class Point implements Serializable{
 		this.y /= ySize;
 	}
 	
+	public void picCoords2cartCoords(){
+		y = 1 - y;
+	}
+
+	public void cartCoords2picCoords(){
+		y = 1 - y;
+	}
+	
+	public void denorm(float xSize, float ySize) {
+		this.x *= xSize;
+		this.y *= ySize;
+	}
+
 	@Override
 	public String toString() {
 		return x + "," + y;

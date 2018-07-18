@@ -48,22 +48,6 @@ public class IOService {
 		return o;
 	}
 
-//	public static ArrayList<Object> readObjects (String fileName){
-//		ArrayList<Object> list = new ArrayList<>();
-//		
-//		try (
-//				FileInputStream fis = new FileInputStream(fileName);
-//				ObjectInputStream ois = new ObjectInputStream(fis);
-//		){
-//			while (ois.available() > 0)
-//				list.add(ois.readObject());
-//			
-//		} catch (Exception e) {
-//			e.printStackTrace();
-//		}
-//		
-//		return list;
-//	}
 	
 
 	public static boolean writeValues (Object o, String fileName){
@@ -101,17 +85,18 @@ public class IOService {
 		return true;
 	}
 
-	public static String readFile (String filename) {
+	public static StringBuffer readFile (String filename) {
 	
 		try (
 				FileReader fr = new FileReader(filename);
 				BufferedReader br = new BufferedReader(fr);
 		){
-			String file = "";
+			StringBuffer file = new StringBuffer();
 			String tmp = "";
+			tmp = br.readLine();
 			while (tmp != null) {
+				file.append(tmp + "\n");
 				tmp = br.readLine();
-				file += tmp + "\n";
 			} 
 			return file;
 

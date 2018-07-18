@@ -174,4 +174,8 @@ public class PaintPanel extends JPanel implements Observer {
 	public void setLineWidth(int width) {
 		widthDefault = width;
 	}
+	
+	public int getLineWidth() {
+		return widthDefault;
+	}
 }

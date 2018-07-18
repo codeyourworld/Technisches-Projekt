@@ -19,6 +19,7 @@ import malen.model.Shapes;
 import malen.view.AboutDialog;
 import malen.view.EditLineWidthDialog;
 import malen.view.PaintFrame;
+import malen.view.ShapeDialog;
 
 public class Controller extends Observable{
 
@@ -134,8 +135,7 @@ public class Controller extends Observable{
 
 		// ---------------- FILE MENU --------------------
 		view.getSaveItem().addActionListener(l -> {
-			FileService.save(coordinates);
-			
+			FileService.save(coordinates);			
 		});
 
 		view.getSaveAsItem().addActionListener(l -> {

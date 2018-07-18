@@ -72,16 +72,12 @@ public class CoordinateSystemCreater implements IData{
 				coorsList.add(new Point(0, abstand*i + offset));	
 				paintNumber(minX + (anzahlXVal - (i-1))*distX, 0, abstand*i + offset);
 				coorsList.add(new Point(width - DIST_X_GRID, abstand*i + offset));				
-//				coorsList.add(new Point(width - DIST_0_X_LINE, abstand*i + offset));				
-
 			}
 			if (lines && anzahlXVal % 2 != 0 && i % 2 == 0) {
 				coorsList.add(new Point(0, abstand*i + offset));
 				paintNumber(minX + (anzahlXVal - (i-1))*distX, 0, abstand*i + offset);
 				coorsList.add(new Point(0, abstand*i + offset));
 				coorsList.add(new Point(width - DIST_X_GRID, abstand*i + offset));				
-//				coorsList.add(new Point(width - DIST_0_X_LINE, abstand*i + offset));				
-					
 			} else {
 				coorsList.add(new Point(DIST_0_Y_LINE-smallLines, abstand*i + offset));
 				coorsList.add(new Point(DIST_0_Y_LINE + smallLines, abstand*i + offset));				
@@ -95,14 +91,11 @@ public class CoordinateSystemCreater implements IData{
 		paintNumber(minX, 0, height - DIST_0_X_LINE);
 		coorsList.add(new Point(DIST_0_Y_LINE, height - DIST_0_X_LINE));
 
-		//TODO: it works for gerade nums until here
-		//TODO Test odd numbers
 		
 		//Siehe Erklärung (1)		
 		coorsList.add(new Point(width, height - DIST_0_X_LINE));
 		
 		
-//		int end = height - (DIST_0_Y_LINE + anzahlXVal*abstand);
 		//Siehe Erklärung (2)		
 		abstand = (width-DIST_0_Y_LINE-DIST_X_GRID)/(anzahlYVal + 1);
 		offset = DIST_0_Y_LINE;
@@ -118,7 +111,6 @@ public class CoordinateSystemCreater implements IData{
 			} else {
 				coorsList.add(new Point(abstand*i + offset, height - (DIST_0_X_LINE + smallLines)));
 				coorsList.add(new Point(abstand*i + offset, height - (DIST_0_X_LINE - smallLines)));
-				//coorsList.add(new Point(abstand*i + offset, height - (DIST_0_X_LINE - smallLines)));
 			}
 			coorsList.add(new Point(abstand*i + offset, height - DIST_0_X_LINE));
 		}
@@ -126,10 +118,9 @@ public class CoordinateSystemCreater implements IData{
 		//zum Koordinatenkreuz		
 		coorsList.add(new Point(DIST_0_Y_LINE, height - DIST_0_X_LINE));
 		coorsList.add(new Point(0, height - DIST_0_X_LINE));
-//		coorsList.add(new Point(DIST_0_Y_LINE, height - DIST_0_X_LINE));
 		coorsList.add(new Point(DIST_0_Y_LINE, height - DIST_0_X_LINE));
 
-//		coorsList.add(new Point(-1, -1));
+
 	}
 	
 	private void paintNumber(int num, int x, int y) {
@@ -181,9 +172,13 @@ public class CoordinateSystemCreater implements IData{
 			default:
 				break;
 			}
-			System.out.println("factor: " + factor);
+			
 			for(int i = 0; i < points.size(); i++) {
-				coorsList.add(new Point(points.get(i).getX()*factor + x + cnt*factor + 15*cnt + 10, -points.get(i).getY()*factor + y));
+				//x is the x startpoint 
+				//points.get(i).getX() has just values from 0 to 1, the width of a number is factor -> so the point has to be multiplied with the factor
+				//start with the 1st letter factor/2 px to the right
+				//there is a space of cnt*(factor/2)
+				coorsList.add(new Point(points.get(i).getX()*factor + x + cnt*factor + factor/2 + cnt*(factor/2), -points.get(i).getY()*factor + y));	
 			}
 			
 		}

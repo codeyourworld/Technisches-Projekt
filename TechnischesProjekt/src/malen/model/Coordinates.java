@@ -44,6 +44,16 @@ public class Coordinates extends Observable{
 	}
 
 	/**
+	 * This method add a point with the (x, y) coordinates and notifies the view
+	 * @param point 
+	 */
+	public void addPoint (Point p) {
+		points.add(p);
+		setChanged();
+		notifyObservers();
+	}
+
+	/**
 	 * This Method clears the list with the points and notifies the view. The start point is also removed.
 	 */
 	public void removeAllPoint () {

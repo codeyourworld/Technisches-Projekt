@@ -117,7 +117,6 @@ public class PaintFrame extends JFrame {
 		setUndecorated(true);
 		setSize(WIDTH, HEIGHT);
 		setVisible(true);
-		System.out.println("panel" + panel.getSize());
 	}
 	
 	public PaintPanel getPaintPanel() {
