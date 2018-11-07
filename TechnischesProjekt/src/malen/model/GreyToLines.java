@@ -115,6 +115,7 @@ public class GreyToLines {
 	};
 
 
+	private ArrayList<Integer> greyValues = new ArrayList<>();
 	private ArrayList<Point> points = new ArrayList<>();
 	private int schwellwert = (MAX_GREY_VALUE%coorsMatrix.length != 0)?MAX_GREY_VALUE/coorsMatrix.length + 1: MAX_GREY_VALUE/coorsMatrix.length;	//der erste und letzte Punkt ist immer in der Mitte
 	private int xOffset = 0;
@@ -157,6 +158,10 @@ public class GreyToLines {
 			for(int y = 0; y < height - yOffset; y++) {
 				greyVal = getGreyValue(x + xOffset, y + yOffset);
 				int choise = (greyVal/schwellwert);
+				if(!greyValues.contains(choise)) {
+					greyValues.add(choise);
+					System.out.println("GreyValue : " + greyVal + ", schwellwert: " + choise);
+				}
 				for(int yj = 0; yj < coorsMatrix[0][0].length; yj++) {
 					for(int xi = 0; xi < coorsMatrix[0].length; xi++) {
 					
@@ -167,8 +172,10 @@ public class GreyToLines {
 							 * every px has the width of coorsMatrix[0].length * factor
 							 * xi is the x value of coorsMatrix where the zig zag line are defined
 							 */
-							int xValue = (coorsMatrix[0].length * x * factor) + xi*factor;
-							int yValue = (coorsMatrix[0].length * y * factor) + yj*factor;
+//							int xValue = ((coorsMatrix[0].length) * x * factor) + xi*factor;
+//							int yValue = ((coorsMatrix[0].length) * y * factor) + yj*factor;
+							int xValue = ((coorsMatrix[0].length -1) * x * factor) + xi*factor;
+							int yValue = ((coorsMatrix[0].length-1) * y * factor) + yj*factor;
 							points.add(new Point(xValue, yValue));
 //							points.add(new Point((coorsMatrix[0].length * x * factor) + xi*factor, (coorsMatrix[0].length * y) + yj * factor));
 						}
@@ -178,6 +185,9 @@ public class GreyToLines {
 				
 			if (x % 2 == 0){
 				for(int y = height - yOffset - 1; y >= 0; y--) {
+					if(x + 1 + xOffset >= width) {
+						break;
+					}
 					greyVal = getGreyValue(x + 1 + xOffset, y + yOffset);
 					int choise = (greyVal/schwellwert);
 						
@@ -193,8 +203,10 @@ public class GreyToLines {
 								 * xi is the x value of coorsMatrix where the zig zag line are defined
 								 */
 								
-								int xValue = (coorsMatrix[0].length * (x + 1) * factor) + xi*factor;
-								int yValue = (coorsMatrix[0].length * y * factor) + yj*factor;
+//								int xValue = ((coorsMatrix[0].length) * (x + 1) * factor) + xi*factor;
+//								int yValue = ((coorsMatrix[0].length) * y * factor) + yj*factor;
+								int xValue = ((coorsMatrix[0].length-1) * (x + 1) * factor) + xi*factor;
+								int yValue = ((coorsMatrix[0].length-1) * y * factor) + yj*factor;
 								points.add(new Point(xValue, yValue));
 	//							points.add(new Point((coorsMatrix[0].length * x * factor) + xi*factor, (coorsMatrix[0].length * y) + yj * factor));
 							}
