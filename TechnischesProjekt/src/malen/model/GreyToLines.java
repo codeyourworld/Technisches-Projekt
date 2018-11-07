@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.imageio.ImageIO;
+import javax.swing.JOptionPane;
 
 import malen.view.PaintFrame;
 
@@ -136,15 +137,22 @@ public class GreyToLines {
 	public void createCoords () {
 		points.clear();
 		int greyVal = 0;
+		String value = JOptionPane.showInputDialog("Bitte geb einen Faktor an. Standard = 1");
 		int factor = 1;
-		if (PaintFrame.HEIGHT / (height-yOffset) > PaintFrame.WIDTH/(width-xOffset)) {
-			factor = (int) Math.ceil(PaintFrame.WIDTH/((width - xOffset) * coorsMatrix[0].length));
+		try {
+			factor = Integer.valueOf(value);
+			
+		} catch (Exception e) {
+			factor = 1;
 		}
-		else {
-			factor = (int)  Math.ceil(PaintFrame.HEIGHT / ((height - yOffset) * coorsMatrix[0].length));
-		}
-		System.out.println(factor + ", coorsMatrix.length" + coorsMatrix[0].length);
-		factor = 1;
+//		if (PaintFrame.HEIGHT / (height-yOffset) > PaintFrame.WIDTH/(width-xOffset)) {
+//			factor = (int) Math.ceil(PaintFrame.WIDTH/((width - xOffset) * coorsMatrix[0].length));
+//		}
+//		else {
+//			factor = (int)  Math.ceil(PaintFrame.HEIGHT / ((height - yOffset) * coorsMatrix[0].length));
+//		}
+//		System.out.println(factor + ", coorsMatrix.length" + coorsMatrix[0].length);
+//		factor = 2;
 		for(int x = 0; x < width - xOffset; x+=2) {
 			for(int y = 0; y < height - yOffset; y++) {
 				greyVal = getGreyValue(x + xOffset, y + yOffset);

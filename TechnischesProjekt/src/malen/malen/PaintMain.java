@@ -1,4 +1,4 @@
-package malen;
+package malen.malen;
 
 import malen.controller.Controller;
 import malen.model.Coordinates;
